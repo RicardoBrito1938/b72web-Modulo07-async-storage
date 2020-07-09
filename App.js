@@ -1,64 +1,55 @@
 import React, {useState, useEffect} from 'react';
 import styled from 'styled-components';
+import {Modal} from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 
 const Page = styled.SafeAreaView`
   flex: 1;
   align-items: center;
-`;
-const Input = styled.TextInput`
-  font-size: 15px;
-  border: 1px solid #000;
-  height: 50px;
-  width: 90%;
-  padding: 10px;
+  background-color: #eee;
+  justify-content: center;
 `;
 
-const Save = styled.Button``;
+const Botao = styled.Button`
+  align-self: center;
+`;
 
-const NameArea = styled.View`
-  padding: 20px;
-  background-color: #ccc;
+const Box = styled.View`
   width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  justify-content: center;
+  align-items: center;
 `;
 
-const Nome = styled.Text`
-  font-size: 18px;
+const BoxBody = styled.View`
+  width: 90%;
+  height: 200px;
+  background-color: #fff;
+  border-radius: 10px;
 `;
 
 export default () => {
-  const [name, setName] = useState('');
-  const [newName, setNewName] = useState('');
-
-  const handleSave = async () => {
-    if (newName !== '') {
-      await AsyncStorage.setItem('@nome', newName);
-      setName(newName);
-      setNewName('');
-    }
-  };
-
-  const getName = async () => {
-    const n = await AsyncStorage.getItem('@nome');
-    setName(n);
-  };
-
-  useEffect(() => {
-    getName();
-  }, []);
+  const [modalVisible, setModalVisible] = useState(false);
 
   return (
     <Page>
-      <Input
-        placeholder="Qual seu nome?"
-        value={newName}
-        onChangeText={(e) => setNewName(e)}
-      />
-      <Save title="save" onPress={handleSave} />
+      <Botao title="Mostrar modal" onPress={() => setModalVisible(true)} />
 
-      <NameArea>
-        <Nome>{name}</Nome>
-      </NameArea>
+      <Modal
+        visible={modalVisible}
+        animationType="fade"
+        transparent={false}
+        onRequestClose={() => setModalVisible(false)}>
+        <Box>
+          <BoxBody>
+            <Botao
+              title="Fechar modal"
+              onPress={() => setModalVisible(false)}
+            />
+          </BoxBody>
+        </Box>
+      </Modal>
     </Page>
   );
 };
